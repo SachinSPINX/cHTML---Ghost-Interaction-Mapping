@@ -1,0 +1,36 @@
+<script>
+
+var inactivityThreshold = 60000; 
+
+
+var inactivityTimeout;
+
+
+function reportInactivity() {
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    'event': 'userInactivity',
+    'inactiveTime': inactivityThreshold / 1000 
+  });
+  console.log("Inaktivität erkannt: Event an dataLayer gesendet.");
+}
+
+
+function resetInactivityTimer() {
+  clearTimeout(inactivityTimeout);
+  inactivityTimeout = setTimeout(reportInactivity, inactivityThreshold);
+}
+
+
+var userEvents = ['mousemove', 'keypress', 'scroll', 'click', 'touchstart'];
+for (var i = 0; i < userEvents.length; i++) {
+  window.addEventListener(userEvents[i], resetInactivityTimer);
+}
+
+
+window.addEventListener('focus', resetInactivityTimer);
+window.addEventListener('blur', resetInactivityTimer);
+
+
+resetInactivityTimer();
+</script>
